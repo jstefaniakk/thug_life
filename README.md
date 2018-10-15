@@ -1,3 +1,4 @@
 # thug_life
-Facecam regonition with additional effects. \n
+Facecam regonition with additional effects.
+
 Press "q" to quit!
