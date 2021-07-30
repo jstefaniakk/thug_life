@@ -8,15 +8,17 @@ import numpy as np
 
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 video = cv2.VideoCapture(0)
-thug = cv2.imread("Thug.png",-1)
+thug = cv2.imread("Thug.png", -1)
 
-wspolczynnik_okulary = 0.95
+wspolczynnik_okulary_h = 0.8
+wspolczynnk_okulary_w = 1.2
 
-#testuje dodatkowe opcje
+# testuje dodatkowe opcje
 a_thug = False
 pygame.mixer.init()
 sound_t = pygame.mixer.music.load("thug_life.mp3")
 print("Press q to quit!")
+
 
 def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
     """Overlay img_overlay on top of img at the position specified by
@@ -46,31 +48,31 @@ def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
     alpha_inv = 1.0 - alpha
 
     for c in range(channels):
-        img[y1:y2, x1:x2, c] = (alpha * img_overlay[y1o:y2o, x1o:x2o, c] +
-                                alpha_inv * img[y1:y2, x1:x2, c])
-
-
+        img[y1:y2, x1:x2, c] = (
+            alpha * img_overlay[y1o:y2o, x1o:x2o, c] + alpha_inv * img[y1:y2, x1:x2, c]
+        )
 
 
 while True:
     check, frame = video.read()
+    frame = cv2.flip(frame, 1)  # lustrzane odbicie
 
-    gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY) # ponoć w czarnobialym lepiej szuka
-    faces=face_cascade.detectMultiScale(gray,
-    scaleFactor=1.15, #1.05 to dobry parametr. oznacza zwiekszenie obszaru wyszukiwania o 5% w kaÅ¼dej pÄ™tli
-    minNeighbors=5)  # standardowo 5
-    #print(faces)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # ponoć w czarnobialym lepiej szuka
+    faces = face_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.15,  # 1.05 to dobry parametr. oznacza zwiekszenie obszaru wyszukiwania o 5% w kaÅ¼dej pÄ™tli
+        minNeighbors=5,
+    )  # standardowo 5
+    # print(faces)
+    # print(type(faces))
 
-    #print(type(faces))
+    if type(faces).__module__ == np.__name__:
 
-
-    if(type(faces).__module__==np.__name__):
-
-        if (not a_thug):
+        if not a_thug:
             pygame.mixer.music.play()
             a_thug = True
 
-        for x,y,w,h in faces:
+        for x, y, w, h in faces:
             """
             #zielony kwadrat wokół twarzy
             img=cv2.rectangle(frame, #obraz na ktorym pracujemy
@@ -78,33 +80,32 @@ while True:
              (x+w,y+h), # prawy dolny rÃ³g
              (0,255,0), #kolor RGB
              3) #grubosc kreski
-             """
+            """
 
-            resized_thug=cv2.resize(thug,(int(w),int(wspolczynnik_okulary* h)))
-            overlay_image_alpha(frame,
-                        resized_thug[:, :, 0:3],
-                        (x, y),
-                        resized_thug[:, :, 3] / 255.0)
-        frame=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY) #zmieniam kolor na czarnobialy
-
-
-
-
-
-
+            resized_thug = cv2.resize(
+                thug, (int(wspolczynnk_okulary_w * w), int(wspolczynnik_okulary_h * h))
+            )
+            okulary_x = int((2 * x + w - wspolczynnk_okulary_w * w) / 2)
+            okulary_y = y
+            overlay_image_alpha(
+                frame,
+                resized_thug[:, :, 0:3],
+                (okulary_x, okulary_y),
+                resized_thug[:, :, 3] / 255.0,
+            )
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # zmieniam kolor na czarnobialy
 
     else:
 
-        if(a_thug):
+        if a_thug:
             pygame.mixer.music.stop()
             a_thug = False
 
     time.sleep(0)
-    cv2.imshow("Capturing...",frame)
-
+    cv2.imshow("Capturing...", frame)
 
     key = cv2.waitKey(1)
-    if (key == ord('q')):
+    if key == ord("q"):
         break
 video.release()
 cv2.destroyAllWindows()
