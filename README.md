@@ -1,4 +1,18 @@
 # thug_life
-Facecam regonition with additional effects.
+Python open-cv facecam regonition app with a special supprising effect. 
+
+## Requirements
+* Python 3.7.0 require
+* Windows and Linux OS
+
+## How to run on Linux
+```
+git clone https://github.com/jstefaniakk/thug_life
+cd thug_life
+python -m pip venv venv
+. ./venv/bin/activate
+python -m pip install -r requirements.txt
+python ./face_thug_gray_with_sound.py
+```
 
 Press "q" to quit!
