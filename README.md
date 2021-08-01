@@ -1,5 +1,5 @@
 # thug_life
-Python open-cv facecam regonition app with a special supprising effect. 
+Python openCV facecam regonition app with a special supprising effect. 
 
 ## Requirements
 * Python 3.7.0
