@@ -2,8 +2,8 @@
 Python open-cv facecam regonition app with a special supprising effect. 
 
 ## Requirements
-* Python 3.7.0 require
-* Windows and Linux OS
+* Python 3.7.0
+* Windows or Linux OS
 
 ## How to run on Linux
 ```
