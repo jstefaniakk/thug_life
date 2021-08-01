@@ -7,8 +7,8 @@ face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 video = cv2.VideoCapture(0)
 thug = cv2.imread("Thug.png", -1)
 
-wspolczynnik_okulary_h = 0.8
-wspolczynnk_okulary_w = 1.2
+glasses_coefficient_h = 0.8
+glasses_coefficient_w = 1.2
 
 # testuje dodatkowe opcje
 a_thug = False
@@ -52,16 +52,14 @@ def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
 
 while True:
     check, frame = video.read()
-    frame = cv2.flip(frame, 1)  # lustrzane odbicie
+    frame = cv2.flip(frame, 1)  # mirrored image
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # ponoć w czarnobialym lepiej szuka
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(
         gray,
-        scaleFactor=1.15,  # 1.05 to dobry parametr. oznacza zwiekszenie obszaru wyszukiwania o 5% w kaÅ¼dej pÄ™tli
+        scaleFactor=1.15,  # 1.05 is a good value to start. It means an increase of 5% with each loop to the area of search.
         minNeighbors=5,
-    )  # standardowo 5
-    # print(faces)
-    # print(type(faces))
+    )  # standard is 5
 
     if type(faces).__module__ == np.__name__:
 
@@ -71,26 +69,26 @@ while True:
 
         for x, y, w, h in faces:
             """
-            #zielony kwadrat wokół twarzy
-            img=cv2.rectangle(frame, #obraz na ktorym pracujemy
-             (x,y), #lewy gÃ³rny rÃ³g
-             (x+w,y+h), # prawy dolny rÃ³g
-             (0,255,0), #kolor RGB
-             3) #grubosc kreski
+            #green square around found face
+            img=cv2.rectangle(frame,
+             (x,y), #left upper corner
+             (x+w,y+h), # right upper corner
+             (0,255,0), #RGB color
+             3) #line thickness
             """
 
             resized_thug = cv2.resize(
-                thug, (int(wspolczynnk_okulary_w * w), int(wspolczynnik_okulary_h * h))
+                thug, (int(glasses_coefficient_w * w), int(glasses_coefficient_h * h))
             )
-            okulary_x = int((2 * x + w - wspolczynnk_okulary_w * w) / 2)
-            okulary_y = y
+            glasses_x = int((2 * x + w - glasses_coefficient_w * w) / 2)
+            glasses_y = y
             overlay_image_alpha(
                 frame,
                 resized_thug[:, :, 0:3],
-                (okulary_x, okulary_y),
+                (glasses_x, glasses_y),
                 resized_thug[:, :, 3] / 255.0,
             )
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # zmieniam kolor na czarnobialy
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     else:
 
