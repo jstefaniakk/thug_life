@@ -1,6 +1,3 @@
-"""
-Wykrzacza sie przy wiecej niz 1 twarzy.
-"""
 import pygame
 import cv2, time
 import numpy as np
