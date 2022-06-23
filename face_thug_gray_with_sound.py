@@ -13,7 +13,7 @@ glasses_coefficient_w = 1.2
 # testuje dodatkowe opcje
 a_thug = False
 pygame.mixer.init()
-sound_t = pygame.mixer.music.load("thug_life.mp3")
+sound_t = pygame.mixer.music.load("thug_life.ogg")
 print("Press q to quit!")
 
 
